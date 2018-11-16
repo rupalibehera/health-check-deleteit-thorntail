@@ -11,8 +11,14 @@ osio {
     def resources = processTemplate(params: [
           release_version: "1.0.${env.BUILD_NUMBER}"
     ])
-
-    build resources: resources
+    integrationTestCmd =
+         "mvn org.apache.maven.plugins:maven-failsafe-plugin:integration-test \
+            org.apache.maven.plugins:maven-failsafe-plugin:verify \
+            -Dnamespace.use.current=false -Dnamespace.use.existing=${utils.testNamespace()} \
+            -Dit.test=*IT -DfailIfNoTests=false -DenableImageStreamDetection=true \
+            -P openshift-it"
+    build resources: resources, commands: integrationTestCmd
+    
 
   }
 
