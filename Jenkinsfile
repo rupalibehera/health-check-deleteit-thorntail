@@ -1,4 +1,5 @@
 @Library('github.com/fabric8io/osio-pipeline@master') _
+def utils = new io.openshift.Utils()
 
 osio {
 
