@@ -1,31 +1,31 @@
-@Library('github.com/fabric8io/osio-pipeline@master') _
+#!/usr/bin/groovy
 
-osio {
+@Library('github.com/fabric8io/fabric8-pipeline-library@master')
+def canaryVersion = "1.0.${env.BUILD_NUMBER}"
+def utils = new io.fabric8.Utils()
 
-  config runtime: 'java', version: '1.8.1'
+mavenNode {
+  checkout scm
+  if (utils.isCI()) {
 
-  ci {
-    echo "Running CI build......"
+    mavenCI {
+        integrationTestCmd =
+             "mvn org.apache.maven.plugins:maven-failsafe-plugin:integration-test \
+                org.apache.maven.plugins:maven-failsafe-plugin:verify \
+                -Dnamespace.use.current=false -Dnamespace.use.existing=${utils.testNamespace()} \
+                -Dit.test=*IT -DfailIfNoTests=false -DenableImageStreamDetection=true \
+                -P openshift-it"
+    }
 
-
-    def resources = processTemplate(params: [
-          release_version: "1.0.${env.BUILD_NUMBER}"
-    ])
-
-    build resources: resources
-
-  }
-
-  cd {
-    echo "Running CD build......"
-
-    def resources = processTemplate(params: [
-          release_version: "1.0.${env.BUILD_NUMBER}"
-    ])
-
-    build resources: resources
-    deploy resources: resources, env: 'stage'
-    deploy resources: resources, env: 'run', approval: 'manual'
-
+  } else if (utils.isCD()) {
+    echo 'NOTE: running pipelines for the first time will take longer as build and base docker images are pulled onto the node'
+    container(name: 'maven', shell:'/bin/bash') {
+      stage('Build Image') {
+        mavenCanaryRelease {
+          version = canaryVersion
+        }
+      }
+    }
   }
 }
+
