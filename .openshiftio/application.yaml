@@ -40,16 +40,16 @@ objects:
     labels:
       version: ${RELEASE_VERSION}
   spec: {}
-# - apiVersion: v1
-#   kind: ImageStream
-#   metadata:
-#     name: runtime-thorntail-health-check
-#   spec:
-#     tags:
-#     - name: latest
-#       from:
-#         kind: DockerImage
-#         name: registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: runtime-thorntail-health-check
+  spec:
+    tags:
+    - name: latest
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -72,8 +72,8 @@ objects:
     strategy:
       sourceStrategy:
         from:
-          kind: DockerImage
-          name: 'registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift'
+          kind: ImageStreamTag
+          name: 'runtime-thorntail-health-check:latest'
         incremental: true
         env:
         - name: MAVEN_ARGS_APPEND
