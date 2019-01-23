@@ -5,6 +5,7 @@ osio {
   config runtime: 'java', version: 1.8
 
   ci {
+    echo "CI.."
      integrationTestCmd = "mvn verify integration-test -Dnamespace.use.current=false -Dnamespace.use.existing=${testNamespace()} -Dit.test=*IT -DfailIfNoTests=false -DenableImageStreamDetection=true -Popenshift,openshift-it"
      runTest commands: integrationTestCmd
   }
