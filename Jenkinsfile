@@ -1,8 +1,8 @@
-@Library('github.com/rupalibehera/osio-pipeline@pod_template_test') _
+@Library('github.com/rupalibehera/osio-pipeline@pod_template') _
 
 osio {
 
-  config runtime: 'java'
+  config runtime: 'java', version: 1.8
 
   ci {
      integrationTestCmd = "mvn verify integration-test -Dnamespace.use.current=false -Dnamespace.use.existing=${testNamespace()} -Dit.test=*IT -DfailIfNoTests=false -DenableImageStreamDetection=true -Popenshift,openshift-it"
