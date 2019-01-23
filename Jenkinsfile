@@ -1,4 +1,4 @@
-@Library('github.com/rupalibehera/osio-pipeline@pod_template') _
+@Library('github.com/rupalibehera/osio-pipeline@pod_template_test') _
 
 osio {
 
